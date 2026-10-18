@@ -30,9 +30,9 @@ scene.add(fillLight);
 const floor = new THREE.Mesh(
   new THREE.CircleGeometry(6, 64),
   new THREE.MeshStandardMaterial({
-    color: 0x162b3d,
-    metalness: 0.2,
-    roughness: 0.8,
+    color: 0x294c62,
+    metalness: 0.0,
+    roughness: 0.78,
   })
 );
 floor.rotation.x = -Math.PI / 2;
@@ -42,10 +42,12 @@ scene.add(floor);
 const boltGroup = new THREE.Group();
 scene.add(boltGroup);
 
+const toyColors = [0xff5c7a, 0xffc857, 0x7ce7c5, 0x7aa2ff, 0xd98eff, 0xff9f7a];
+
 const boltMaterial = new THREE.MeshStandardMaterial({
-  color: 0xe5e7eb,
-  metalness: 0.9,
-  roughness: 0.18,
+  color: 0xdfe7f3,
+  metalness: 0.08,
+  roughness: 0.24,
 });
 
 const boltHead = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.25, 0.7, 32), boltMaterial);
@@ -58,7 +60,7 @@ boltGroup.add(boltStem);
 
 const boltThread = new THREE.Mesh(
   new THREE.TorusGeometry(0.85, 0.17, 8, 32),
-  new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.8, roughness: 0.25 })
+  new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.2, roughness: 0.2 })
 );
 boltThread.rotation.x = Math.PI / 2;
 boltThread.position.y = -1.2;
@@ -69,7 +71,7 @@ scene.add(screwdriver);
 
 const driverHandle = new THREE.Mesh(
   new THREE.CylinderGeometry(0.16, 0.16, 2.7, 18),
-  new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.35, roughness: 0.75 })
+  new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.08, roughness: 0.32 })
 );
 driverHandle.rotation.z = Math.PI / 2;
 driverHandle.position.x = -1.2;
@@ -77,11 +79,36 @@ screwdriver.add(driverHandle);
 
 const driverTip = new THREE.Mesh(
   new THREE.CylinderGeometry(0.12, 0.12, 0.85, 18),
-  new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.9, roughness: 0.3 })
+  new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.7, roughness: 0.2 })
 );
 driverTip.rotation.z = Math.PI / 2;
 driverTip.position.x = 0.3;
 screwdriver.add(driverTip);
+
+function addDecorativeButtons() {
+  const buttonGeo = new THREE.TorusGeometry(0.14, 0.04, 8, 18);
+
+  for (let i = 0; i < 12; i++) {
+    const color = toyColors[i % toyColors.length];
+    const mat = new THREE.MeshStandardMaterial({
+      color,
+      metalness: 0.08,
+      roughness: 0.2,
+    });
+
+    const btn = new THREE.Mesh(buttonGeo, mat);
+    const angle = (i / 12) * Math.PI * 2;
+    const radius = 1.35 + (i % 3) * 0.08;
+    const height = -0.65 + ((i % 4) * 0.2);
+
+    btn.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * 0.62);
+    btn.rotation.x = Math.PI / 2;
+    btn.rotation.z = angle * 0.5;
+    boltGroup.add(btn);
+  }
+}
+
+addDecorativeButtons();
 
 const requiredTurn = 2.8;
 let currentTurn = 0;
